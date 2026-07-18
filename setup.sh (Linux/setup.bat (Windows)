@@ -1,0 +1,84 @@
+@echo off
+REM ShopHub Quick Setup Script for Windows
+
+echo.
+echo 0x1F6D2 ShopHub - E-Commerce Platform Setup
+echo ==========================================
+echo.
+
+REM Check if Python is installed
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo X Python is not installed. Please install Python 3.8 or higher.
+    pause
+    exit /b 1
+)
+
+echo OK Python found:
+python --version
+echo.
+
+REM Create virtual environment
+if not exist "venv" (
+    echo. Creating virtual environment...
+    python -m venv venv
+    echo OK Virtual environment created
+) else (
+    echo OK Virtual environment already exists
+)
+
+echo.
+
+REM Activate virtual environment
+echo. Activating virtual environment...
+call venv\Scripts\activate.bat
+
+echo.
+
+REM Install dependencies
+echo. Installing dependencies...
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+if errorlevel 1 (
+    echo X Failed to install dependencies
+    pause
+    exit /b 1
+)
+
+echo OK Dependencies installed successfully
+
+echo.
+
+REM Copy .env file if it doesn't exist
+if not exist ".env" (
+    echo. Creating .env file from template...
+    copy .env.example .env
+    echo OK .env file created. Update it with your settings if needed.
+) else (
+    echo OK .env file already exists
+)
+
+echo.
+
+REM Create directories if needed
+if not exist "templates" mkdir templates
+if not exist "static" mkdir static
+if not exist "logs" mkdir logs
+
+echo.
+echo ==========================================
+echo OK Setup Complete!
+echo ==========================================
+echo.
+echo 0x1F680 To start the application, run:
+echo    python main.py
+echo.
+echo Open http://localhost:8000 in your browser
+echo.
+echo Tips:
+echo   - Customer Hub: http://localhost:8000
+echo   - Seller Portal: http://localhost:8000/admin
+echo   - API Docs: http://localhost:8000/docs
+echo.
+pause
